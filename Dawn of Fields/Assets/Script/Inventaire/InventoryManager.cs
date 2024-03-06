@@ -1,19 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
     // Liste pour stocker les objets de l'inventaire
-    public List<Item> inventory = new List<Item>(10);
+    public List<ItemData> inventory = new List<ItemData>();
+    public int maxSize;
+    public int maxStack;
 
-    public void AddItem(Item item)
+    [SerializeField]
+    private GameObject inventoryPanel;
+
+    [SerializeField]
+    private Transform inventorySlotsParent;
+
+
+    private void Update()
     {
-        inventory.Add(item);
-        Debug.Log($"L'item {item.name} a été ajouté de l'inventaire avec reussite !");
+        DisplayInventory();
     }
 
-    public void RemoveItem(Item item)
+    public void AddItem(ItemData item)
+    {
+
+        ItemData existingItem = inventory.Find(i => i.id == item.id);
+
+        if(existingItem != null)
+        {
+            existingItem.quantite++;
+            Debug.Log($"L'item {item.name} a été ajouté à la pile existante dans l'inventaire. Nouvelle taille de la pile : {existingItem.quantite}");
+            RefreshContent();
+        }
+        else
+        {
+            if (!IsFull())
+            {
+                ItemData newItem = Instantiate(item);
+                inventory.Add(newItem);
+                RefreshContent();
+                Debug.Log($"L'item {item.name} a été ajouté de l'inventaire avec reussite !");
+            }
+            else
+            {
+                Debug.LogWarning($"L'inventaire est pleins !");
+            }
+        }       
+    }
+
+    public void RemoveItem(ItemData item)
     {
         if (inventory.Contains(item))
         {
@@ -22,9 +58,24 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"L'item n'existe pas : {item.name}");
+            Debug.LogWarning($"L'item n'existe pas : {item.name}");
         }
         
+    }
+
+    private void RefreshContent()
+    {
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            inventorySlotsParent.GetChild(i).GetChild(0).GetComponent<Image>().sprite = inventory[i].icon;
+            inventorySlotsParent.GetChild(i).GetChild(1).GetComponent<Text>().text = "x" + inventory[i].quantite.ToString();
+        }
+    }
+
+
+    public bool IsFull()
+    {
+        return inventory.Count == maxSize;
     }
 
     public void ClearInventory()
@@ -36,8 +87,13 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("L'inventaire a été vidé !");
     }
 
-    public void displayInventory()
+    public void DisplayInventory()
     {
+
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+        }
 
     }
 

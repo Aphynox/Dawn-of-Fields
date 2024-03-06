@@ -9,6 +9,8 @@ public class ItemData : ScriptableObject
 
     public string nom;
     public string description;
+    public int quantite;
+    public int id;
     public Sprite icon;
     public GameObject prefab;
 
