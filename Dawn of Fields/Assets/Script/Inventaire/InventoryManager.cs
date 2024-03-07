@@ -39,8 +39,10 @@ public class InventoryManager : MonoBehaviour
             else
             {
 
+                
                 CreateNewStack(existingItem);
-            
+                existingItem.quantite = 1;
+                RefreshContent();
             }
             
         }
@@ -50,7 +52,7 @@ public class InventoryManager : MonoBehaviour
             {
                 ItemData newItem = Instantiate(item);
                 inventory.Add(newItem);
-                RefreshContent();
+                
                 Debug.Log($"L'item {item.name} a été ajouté de l'inventaire avec reussite !");
             }
             else
@@ -68,8 +70,7 @@ public class InventoryManager : MonoBehaviour
             ItemData newItem = Instantiate(item);
             inventory.Add(newItem);
             RefreshContent();
-            Debug.Log($"Un nouveau stack de l'item {item.name} a été créé dans l'inventaire. Nouvelle taille de la pile : {newItemStack.quantite}")
-                
+            Debug.Log($"Un nouveau stack de l'item {item.name} a été créé dans l'inventaire. Nouvelle taille de la pile : {newItem.quantite}");                
         }
         else
         {
