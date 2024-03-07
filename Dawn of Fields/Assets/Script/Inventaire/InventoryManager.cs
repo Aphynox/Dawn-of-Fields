@@ -29,9 +29,20 @@ public class InventoryManager : MonoBehaviour
 
         if(existingItem != null)
         {
-            existingItem.quantite++;
-            Debug.Log($"L'item {item.name} a été ajouté à la pile existante dans l'inventaire. Nouvelle taille de la pile : {existingItem.quantite}");
-            RefreshContent();
+            if(existingItem.quantite < maxStack)
+            {
+
+                existingItem.quantite++;
+                Debug.Log($"L'item {item.name} a Ã©tÃ© ajoutÃ© Ã  la pile existante dans l'inventaire. Nouvelle taille de la pile : {existingItem.quantite}");
+                RefreshContent();                
+            }
+            else
+            {
+
+                CreateNewStack(existingItem);
+            
+            }
+            
         }
         else
         {
@@ -40,7 +51,7 @@ public class InventoryManager : MonoBehaviour
                 ItemData newItem = Instantiate(item);
                 inventory.Add(newItem);
                 RefreshContent();
-                Debug.Log($"L'item {item.name} a été ajouté de l'inventaire avec reussite !");
+                Debug.Log($"L'item {item.name} a Ã©tÃ© ajoutÃ© de l'inventaire avec reussite !");
             }
             else
             {
@@ -49,12 +60,29 @@ public class InventoryManager : MonoBehaviour
         }       
     }
 
+    public void CreateNewStack(ItemData item)
+    {
+        if(!IsFull())
+        {
+
+            ItemData newItem = Instantiate(item);
+            inventory.Add(newItem);
+            RefreshContent();
+            Debug.Log($"Un nouveau stack de l'item {item.name} a Ã©tÃ© crÃ©Ã© dans l'inventaire. Nouvelle taille de la pile : {newItemStack.quantite}")
+                
+        }
+        else
+        {
+            Debug.LogWarning($"L'inventaire est pleins !");
+        }    
+    }
+
     public void RemoveItem(ItemData item)
     {
         if (inventory.Contains(item))
         {
             inventory.Remove(item);
-            Debug.Log($"L'item {item.name} a été enlevé de l'inventaire avec reussite !");
+            Debug.Log($"L'item {item.name} a Ã©tÃ© enlevÃ© de l'inventaire avec reussite !");
         }
         else
         {
@@ -84,7 +112,7 @@ public class InventoryManager : MonoBehaviour
         {
             RemoveItem(inventory[i]);
         }
-        Debug.Log("L'inventaire a été vidé !");
+        Debug.Log("L'inventaire a Ã©tÃ© vidÃ© !");
     }
 
     public void DisplayInventory()
@@ -97,5 +125,5 @@ public class InventoryManager : MonoBehaviour
 
     }
 
-    // Vous pouvez ajouter d'autres fonctions liées à la gestion de l'inventaire ici
+    // Vous pouvez ajouter d'autres fonctions liÃ©es Ã  la gestion de l'inventaire ici
 }
